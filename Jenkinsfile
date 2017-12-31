@@ -33,10 +33,6 @@ node('jenkins-agent') {
             echo 'Building Dependency...'
             sh 'npm install'
         }
-        stage('Test') {
-            echo 'Testing...'
-            sh './scripts/test.sh'
-        }
 	
     }finally{
         
