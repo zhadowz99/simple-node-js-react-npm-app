@@ -1,4 +1,4 @@
-node('jenkins-agent') {
+node('jenkins-agent-php-1') {
   environment {
         CI = 'true'
     }
@@ -42,11 +42,11 @@ node('jenkins-agent') {
         withSonarQubeEnv('SonarQube') {
           sh "${scannerHome}/bin/sonar-scanner"
         }
-        stage('Deliver') {
-                sh './scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './scripts/kill.sh'
-        }
+	stage 'buildInDevelopment'
+	openshiftBuild(namespace: 'dev-openshift', buildConfig: 'simple-react', showBuildLogs: 'true')
+	stage 'deployInDevelopment'
+	openshiftDeploy(namespace: 'dev-openshift', deploymentConfig: 'simple-react')
+	openshiftScale(namespace: 'dev-openshift', deploymentConfig: 'simple-react',replicaCount: '1')
     }
     
   }
